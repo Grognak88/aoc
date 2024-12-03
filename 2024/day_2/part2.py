@@ -1,38 +1,29 @@
 with open("input.txt") as file:
-    reports = file.read().split("\n")
-    reports = [report.split() for report in reports]
-    reports = [[int(s) for s in report] for report in reports]
+    data = file.read().split("\n")
+    data = [a.split() for a in data]
+    data = [list(map(int, a)) for a in data]
 
-def lst_diff(lst):   
-    for x in range(1, len(lst)):
-        diff = abs(lst[x] - lst[x - 1])
-        if diff < 1 or diff > 3:
+def safe(values):
+    prev_diff = 0   
+    for i in range(1, len(values)):
+        if i == 0:
+            continue
+        diff = values[i] - values[i-1]
+        if (prev_diff * diff < 0) or (abs(diff) < 1 or abs(diff) > 3):
             return False
+        prev_diff = diff
     return True
 
-def is_ascending_or_descending(lst):
-    ascension_score = 0
-    descending_score = 0
-    for x in range(1, len(lst)):
-        if (lst[x] - lst[x - 1]) > 0:
-            ascension_score += 1
-    for x in range(1, len(lst)):
-        if (lst[x] - lst[x - 1]) < 0:
-            descending_score += 1
-    if len(lst) -1 == ascension_score  or len(lst) -1 == descending_score:
-        return True
-    else:
-        return False
-
-def damp_report(lst):
-    backup_lst = lst
-    for x in range(len(lst)):
-        lst = lst[:x] + lst[x + 1:]
-        if is_ascending_or_descending(lst) and lst_diff(lst):
+def problem_dampener(line):
+    backup_line = line
+    for x in range(len(line)):
+        line = line[:x] + line[x + 1:]
+        if safe(line):
             return True
         else:
-            lst = backup_lst
+            line = backup_line
     return False
 
-safe_reports = [report for report in reports if damp_report(report)]
-print(len(safe_reports))
+safe_count = len([report for report in data if problem_dampener(report)])
+
+print(safe_reports)
