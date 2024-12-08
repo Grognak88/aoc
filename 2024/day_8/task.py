@@ -1,5 +1,5 @@
 from collections import defaultdict
-from itertools import permutations
+from itertools import combinations
 from math import gcd
 
 grid_locations = set()
@@ -28,8 +28,12 @@ def find_antinodes(find_lines):
 
 def calculate_locations_for_symbol(set_of_locations, find_lines):
     found = set()
-    combinations = list(permutations(list(set_of_locations)))
-    for combination in combinations:
+    combinations_points = list(
+        list(comb) for comb in combinations(list(set_of_locations), 2)
+    )
+    reversed_point = [combs[::-1] for combs in combinations_points]
+    combinations_points.extend(reversed_point)
+    for combination in combinations_points:
         for i, a in enumerate(combination):
             if i < len(combination) - 1:
                 b = combination[i + 1]
