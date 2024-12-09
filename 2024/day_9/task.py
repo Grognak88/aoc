@@ -1,4 +1,4 @@
-with open("/home/onyxia/work/aoc/2024/day_9/input.txt") as file:
+with open("input.txt") as file:
     data = file.read()
     data = list(data)
 
