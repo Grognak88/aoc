@@ -1,4 +1,5 @@
 from time import time
+from threading import Thread
 start_time = time()
 
 class TreeNode:
@@ -11,24 +12,42 @@ class TreeNode:
 with open("/home/onyxia/work/aoc/2024/day_10/input.txt") as file:
     data = file.read().split("\n")
     data = [list(line) for line in data]
-    data = {j+i*1j: int(data[i][j]) for i in range(len(data)) for j in range(len(data[0]))}
+    dimension = len(data)
+    data = {j+i*1j: int(data[i][j]) for i in range(dimension) for j in range(len(data[0]))}
    
 roots = {key: TreeNode((key, val)) for key, val in data.items() if val == 0}
-           
-def traverse_tree(current_location: TreeNode, incline: int):
-    if incline == 9:
+
+thread_pool = []
+
+def traverse_tree(current_location: TreeNode):
+    if current_location.data[1] == 9:
         return
-    next_incline = incline +1
+    next_incline = current_location.data[1] + 1
     directions = (current_location.data[0] + (0-1j), current_location.data[0] + (0+1j), current_location.data[0] + (-1+0j), current_location.data[0] + (1+0j))    
 
     for next_step in directions:
         if next_step in data and data[next_step] == next_incline:
             next_node = TreeNode((next_step, next_incline))
-            current_location.add_child(next_node)  
-            traverse_tree(next_node, next_incline)        
-             
-for origin, root in roots.items():
-    traverse_tree(root,0)
+            current_location.add_child(next_node)
+            traverse_tree(next_node)                   
+
+def workers(start, step, dimension):
+    global roots
+    for root in list(roots.values())[start:start + step if start+step <= dimension else None]:        
+        traverse_tree(root)
+
+def main_thread():
+    step = 3
+    for i in range(0,dimension, 3):
+        print(i)
+        thread = Thread(target=workers, args=(i, step, dimension))
+        thread.start()
+        thread_pool.append(thread)
+
+main_thread()
+
+for thread in thread_pool:
+    thread.join()
 
 scores = []
 scores_2 = []
