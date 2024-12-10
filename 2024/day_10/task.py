@@ -37,8 +37,8 @@ def workers(start, step, dimension):
         traverse_tree(root)
 
 def main_thread():
-    step = 3
-    for i in range(0,dimension, 3):       
+    step = dimension // 3
+    for i in range(0,dimension, step):       
         thread = Thread(target=workers, args=(i, step, dimension))
         thread.start()
         thread_pool.append(thread)
