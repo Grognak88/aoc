@@ -15,8 +15,6 @@ with open("/home/onyxia/work/aoc/2024/day_10/input.txt") as file:
     
 starting_locations = {key: set() for key, val in data.items() if val == 0}
 
-threads = []
-
 starting_trees = {key: TreeNode(key) for key, val in data.items() if val == 0}
 
 def traverse(origin, current_location, incline):
@@ -48,11 +46,6 @@ def traverse_tree(current_location: TreeNode, incline: int):
 for origin in starting_locations:
     traverse(origin,origin,0)
 
-for worker in threads:
-    worker.join()
-
-threads = []
-
 scores = []
 
 for start, paths in starting_locations.items():
@@ -69,9 +62,6 @@ split_time = time()
 
 for origin, root in starting_trees.items():
     traverse_tree(root,0)
-
-for worker in threads:
-    worker.join()
 
 scores_2 = []
 
